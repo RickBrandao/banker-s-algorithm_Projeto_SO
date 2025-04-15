@@ -32,7 +32,7 @@ Menu interativo:
 ## 👨‍💻 Integrantes:
 
 Nome: Luis Henrique Lima Brandão/20180116645 	Função no Projeto: Implementação, testes, documentação
-
+Nome: Lucas da Silva Barros/20190180372
 ---
 
 ## 🧪 Como compilar e executar
