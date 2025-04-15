@@ -31,8 +31,8 @@ Menu interativo:
 ---
 ## 👨‍💻 Integrantes:
 
-Nome: Luis Henrique Lima Brandão/20180116645 	Função no Projeto: Implementação, testes, documentação
-Nome: Lucas da Silva Barros/20190180372
+Nome: Luis Henrique Lima Brandão/20180116645 	Função no Projeto: Implementação, testes, documentação.
+Nome: Lucas da Silva Barros/20190180372         Função no Projeto: Análise de possíveis melhorias no código, testes, documentação.
 ---
 
 ## 🧪 Como compilar e executar
