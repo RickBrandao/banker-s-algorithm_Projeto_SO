@@ -2,109 +2,101 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#define MAX_PROCESSES 10   // Limite máximo de processos
-#define MAX_RESOURCES 10   // Limite máximo de tipos de recursos
+#define MAX_PROCESSES 10
+#define MAX_RESOURCES 10
 
-// Função: lerInteiro
-// Exibe um prompt, lê um número inteiro e, caso a entrada seja inválida,
-// exibe "Caractere invalido" e solicita a entrada novamente.
-int lerInteiro(const char *prompt) {
+// Definindo códigos de cor
+#define RESET   "\033[0m"
+#define CYAN    "\033[1;36m"
+#define GREEN   "\033[1;32m"
+#define YELLOW  "\033[1;33m"
+#define RED     "\033[1;31m"
+#define PURPLE  "\033[1;35m"
+
+// Função: lerInteiroSeguro
+int lerInteiroSeguro(const char *prompt, int min, int max) {
     int num;
-    while(1) {
+    while (1) {
         printf("%s", prompt);
         if (scanf("%d", &num) == 1) {
-            // Consome qualquer caractere extra na linha
-            while(getchar() != '\n');
-            return num;
+            if (num >= min && num <= max) {
+                while (getchar() != '\n'); // Limpa o buffer de entrada
+                return num;
+            } else {
+                printf(RED "Valor fora do intervalo permitido (%d a %d). Tente novamente.\n" RESET, min, max);
+                while(getchar() != '\n'); // Limpa o buffer de entrada
+            }
         } else {
-            printf("Caractere invalido\n");
-            // Limpa o buffer de entrada
-            while(getchar() != '\n');
+            printf(RED "Entrada invalida! Por favor, digite um numero inteiro.\n" RESET);
+            while(getchar() != '\n'); // Limpa o buffer de entrada
         }
     }
 }
 
 // Função: calcular_need
-// Calcula a matriz "need" como (max - allocation)
 void calcular_need(int n, int m, int max[][MAX_RESOURCES],
                    int alloc[][MAX_RESOURCES], int need[][MAX_RESOURCES]) {
-    int i, j;
-    for (i = 0; i < n; i++) {
-        for (j = 0; j < m; j++) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
             need[i][j] = max[i][j] - alloc[i][j];
         }
     }
 }
 
 // Função: estadoSeguro
-// Verifica se o sistema está em um estado seguro utilizando o Algoritmo do Banqueiro.
-// Parâmetros:
-//   n       : número de processos
-//   m       : número de tipos de recursos
-//   avail   : vetor de recursos disponíveis (cópia para simulação)
-//   alloc   : matriz de alocações atual
-//   need    : matriz de necessidades (calculada previamente)
-//   safeSeq : vetor que armazenará a sequência segura, se existir
-// Retorna: true se o sistema estiver em estado seguro; false caso contrário.
-bool estadoSeguro(int n, int m, int avail[],
+bool estadoSeguro(int n, int m, int avail[] ,
                   int alloc[][MAX_RESOURCES], int need[][MAX_RESOURCES],
                   int safeSeq[]) {
     bool finish[MAX_PROCESSES] = { false };
     int work[MAX_RESOURCES];
-    int i, j, count = 0;
+    int count = 0;
 
-    // Inicializa work com os recursos disponíveis
-    for (j = 0; j < m; j++) {
+    for (int j = 0; j < m; j++) {
         work[j] = avail[j];
     }
 
     while (count < n) {
         bool found = false;
-        for (i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) {
             if (!finish[i]) {
                 bool podeConcluir = true;
-                for (j = 0; j < m; j++) {
+                for (int j = 0; j < m; j++) {
                     if (need[i][j] > work[j]) {
                         podeConcluir = false;
                         break;
                     }
                 }
                 if (podeConcluir) {
-                    // Processo pode finalizar; simula a liberação de seus recursos
-                    for (j = 0; j < m; j++) {
+                    for (int j = 0; j < m; j++) {
                         work[j] += alloc[i][j];
                     }
-                    safeSeq[count] = i;
+                    safeSeq[count++] = i;
                     finish[i] = true;
                     found = true;
-                    count++;
                 }
             }
         }
-        if (!found)
-            break;
+        if (!found) break;
     }
     return (count == n);
 }
 
-// Função para exibir uma matriz com um título (cada linha representa um processo)
+// Função: exibirMatriz
 void exibirMatriz(int n, int m, int matrix[][MAX_RESOURCES], const char *titulo) {
-    int i, j;
-    printf("\n%s:\n", titulo);
-    for (i = 0; i < n; i++) {
+    printf(PURPLE "\n%s:\n" RESET, titulo);
+    for (int i = 0; i < n; i++) {
         printf("P%d: ", i);
-        for (j = 0; j < m; j++) {
+        for (int j = 0; j < m; j++) {
             printf("%d ", matrix[i][j]);
         }
         printf("\n");
     }
 }
 
-// Função para exibir um vetor com um título
+// Função: exibirVetor
 void exibirVetor(int m, int vetor[], const char *titulo) {
-    int j;
-    printf("\n%s:\n", titulo);
-    for (j = 0; j < m; j++) {
+    printf(PURPLE "\n%s:\n" RESET, titulo);
+    for (int j = 0; j < m; j++) {
         printf("%d ", vetor[j]);
     }
     printf("\n");
@@ -118,58 +110,61 @@ int main() {
     int avail[MAX_RESOURCES];
     int safeSeq[MAX_PROCESSES];
     int opcao;
-    
+
     do {
-        printf("\n===== MENU DO ALGORITMO DO BANQUEIRO =====\n");
-        printf("1. Inserir dados\n");
-        printf("2. Exibir dados inseridos\n");
-        printf("3. Executar algoritmo do banqueiro\n");
-        printf("4. Sair\n");
-        opcao = lerInteiro("Escolha uma opcao: ");
-        
-        switch(opcao) {
+        printf(CYAN "\n====================================\n" RESET);
+        printf(CYAN "|       ALGORITMO DO BANQUEIRO      |\n" RESET);
+        printf(CYAN "|----------------------------------|\n" RESET);
+        printf(CYAN "| 1. Inserir dados                 |\n" RESET);
+        printf(CYAN "| 2. Exibir dados inseridos        |\n" RESET);
+        printf(CYAN "| 3. Executar algoritmo do banqueiro|\n" RESET);
+        printf(CYAN "| 4. Sair                          |\n" RESET);
+        printf(CYAN "====================================\n" RESET);
+
+        opcao = lerInteiroSeguro(GREEN "Escolha uma opcao: " RESET, 1, 4);
+
+        switch (opcao) {
             case 1:
-                n = lerInteiro("\nDigite o numero de processos (max 10): ");
-                m = lerInteiro("Digite o numero de tipos de recursos (max 10): ");
-                
-                // Leitura da matriz de alocações
-                printf("\nDigite a matriz de alocacoes (cada linha para um processo):\n");
+                // Inserir número de processos
+                n = lerInteiroSeguro(YELLOW "\nDigite o numero de processos (max 10): " RESET, 1, MAX_PROCESSES);
+
+                // Inserir número de tipos de recursos
+                m = lerInteiroSeguro(YELLOW "Digite o numero de tipos de recursos (max 10): " RESET, 1, MAX_RESOURCES);
+
+                printf(YELLOW "\nDigite a matriz de alocacoes:\n" RESET);
                 for (int i = 0; i < n; i++) {
-                    printf("Processo P%d:\n", i);
+                    printf(GREEN "Processo P%d:\n" RESET, i);
                     for (int j = 0; j < m; j++) {
                         char prompt[50];
-                        sprintf(prompt, "Digite alocacao para recurso R%d: ", j);
-                        alloc[i][j] = lerInteiro(prompt);
+                        sprintf(prompt, "  Alocacao para recurso R%d: ", j);
+                        alloc[i][j] = lerInteiroSeguro(prompt, 0, 1000);
                     }
                 }
-                
-                // Leitura da matriz de demandas máximas
-                printf("\nDigite a matriz de demandas maximas (cada linha para um processo):\n");
+
+                printf(YELLOW "\nDigite a matriz de demandas maximas:\n" RESET);
                 for (int i = 0; i < n; i++) {
-                    printf("Processo P%d:\n", i);
+                    printf(GREEN "Processo P%d:\n" RESET, i);
                     for (int j = 0; j < m; j++) {
                         char prompt[50];
-                        sprintf(prompt, "Digite demanda maxima para recurso R%d: ", j);
-                        max[i][j] = lerInteiro(prompt);
+                        sprintf(prompt, "  Demanda maxima para recurso R%d: ", j);
+                        max[i][j] = lerInteiroSeguro(prompt, 0, 1000);
                     }
                 }
-                
-                // Leitura do vetor de recursos disponíveis
-                printf("\nDigite o vetor de recursos disponiveis:\n");
+
+                printf(YELLOW "\nDigite o vetor de recursos disponiveis:\n" RESET);
                 for (int j = 0; j < m; j++) {
                     char prompt[50];
-                    sprintf(prompt, "Digite recurso disponivel para R%d: ", j);
-                    avail[j] = lerInteiro(prompt);
+                    sprintf(prompt, "  Recursos disponiveis para R%d: ", j);
+                    avail[j] = lerInteiroSeguro(prompt, 0, 1000);
                 }
-                
-                // Calcula a matriz de necessidades
+
                 calcular_need(n, m, max, alloc, need);
-                printf("\nDados inseridos com sucesso!\n");
+                printf(GREEN "\n>> Dados inseridos com sucesso!\n" RESET);
                 break;
-                
+
             case 2:
                 if (n == 0 || m == 0) {
-                    printf("\nNenhum dado inserido. Utilize a opcao 1 primeiro.\n");
+                    printf(RED "\nNenhum dado inserido. Utilize a opcao 1 primeiro.\n" RESET);
                 } else {
                     exibirMatriz(n, m, alloc, "Matriz de Alocacoes");
                     exibirMatriz(n, m, max, "Matriz de Demandas Maximas");
@@ -177,33 +172,29 @@ int main() {
                     exibirMatriz(n, m, need, "Matriz de Necessidades (Need = Max - Alocacao)");
                 }
                 break;
-                
+
             case 3:
                 if (n == 0 || m == 0) {
-                    printf("\nNenhum dado inserido. Utilize a opcao 1 primeiro.\n");
+                    printf(RED "\nNenhum dado inserido. Utilize a opcao 1 primeiro.\n" RESET);
                 } else {
                     if (estadoSeguro(n, m, avail, alloc, need, safeSeq)) {
-                        printf("\nO sistema esta em um estado seguro.\n");
-                        printf("Sequencia segura: ");
+                        printf(GREEN "\nO sistema esta em um estado SEGURO.\n" RESET);
+                        printf(GREEN "Sequencia segura encontrada: " RESET);
                         for (int i = 0; i < n; i++) {
                             printf("P%d ", safeSeq[i]);
                         }
                         printf("\n");
                     } else {
-                        printf("\nO sistema NAO esta em um estado seguro.\n");
+                        printf(RED "\nO sistema NAO esta em um estado seguro.\n" RESET);
                     }
                 }
                 break;
-                
+
             case 4:
-                printf("\nEncerrando o programa...\n");
+                printf(PURPLE "\nEncerrando o programa...\n" RESET);
                 break;
-                
-            default:
-                printf("\nOpcao invalida. Tente novamente.\n");
         }
-        
-    } while(opcao != 4);
-    
+    } while (opcao != 4);
+
     return 0;
 }
