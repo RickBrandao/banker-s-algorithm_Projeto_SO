@@ -50,7 +50,7 @@ Compilar:
 gcc banker_so.c -o banker
 
 Rodar:
-.\banker.exe
+.\algoritmo_banqueiro.exe
 
 
 
