@@ -46,10 +46,10 @@ gcc banker_so.c -o banker
 
 No terminal Windows:
 
-// Compilar:
+Compilar:
 gcc banker_so.c -o banker
 
-// Rodar:
+Rodar:
 .\algoritmo_banqueiro.exe
 
 
