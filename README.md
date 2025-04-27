@@ -42,6 +42,8 @@ No terminal Linux:
 
 bash
 gcc banker_so.c -o banker
+
+Rodar:
 ./banker
 
 No terminal Windows:
