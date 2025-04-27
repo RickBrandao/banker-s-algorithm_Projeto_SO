@@ -47,10 +47,12 @@ gcc banker_so.c -o banker
 No terminal Windows:
 
 Compilar:
-gcc banker_so.c -o banker
+gcc banker_so.C -o Banqueiro
+
 
 Rodar:
-.\banker.exe
+./Banqueiro
+
 
 
 
