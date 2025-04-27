@@ -40,8 +40,17 @@ Menu interativo:
 
 No terminal Linux:
 
-```bash
+bash
 gcc banker_so.c -o banker
 ./banker
 
----
+No terminal Windows:
+
+// Compilar:
+gcc banker_so.c -o banker
+
+// Rodar:
+.\algoritmo_banqueiro.exe
+
+
+
