@@ -26,6 +26,7 @@ O sistema:
 ---
 
 📈 Fluxo do Programa (Passo a Passo)
+
 1 - Início da execução:
 
 - O programa inicializa variáveis de controle.
