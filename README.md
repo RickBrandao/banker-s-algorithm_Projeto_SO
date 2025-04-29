@@ -65,25 +65,25 @@ Need[i][j] = Max[i][j] - Allocation[i][j]
 
 - Em seguida, simula a execução dos processos:
 
- Procura processos cuja necessidade possa ser satisfeita pelos recursos disponíveis.
+- Procura processos cuja necessidade possa ser satisfeita pelos recursos disponíveis.
 
- Se encontrar, libera os recursos do processo finalizado para o sistema.
+- Se encontrar, libera os recursos do processo finalizado para o sistema.
 
- Repete o processo até todos os processos serem finalizados ou até não ser possível prosseguir.
+- Repete o processo até todos os processos serem finalizados ou até não ser possível prosseguir.
 
- Se todos os processos forem executados com sucesso:
+- Se todos os processos forem executados com sucesso:
 
- O sistema é considerado em estado seguro.
+- O sistema é considerado em estado seguro.
 
- Exibe a sequência segura encontrada.
+- Exibe a sequência segura encontrada.
 
- Caso contrário:
+- Caso contrário:
 
- Informa que o sistema não está em estado seguro (risco de deadlock).
+- Informa que o sistema não está em estado seguro (risco de deadlock).
 
 5 - Encerramento (Opção 4):
 
-  O programa finaliza a execução com uma mensagem de saída.
+- O programa finaliza a execução com uma mensagem de saída.
 
 
 ## 🧪 Como compilar e executar
